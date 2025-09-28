@@ -4,6 +4,6 @@ import clumsy3d;
 
 int main()
 {
-	clumsy3d::app app;
+	clumsy::app app;
 	app.run();
 }
