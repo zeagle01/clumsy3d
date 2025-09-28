@@ -1,7 +1,9 @@
 
-#include <iostream>
+
+import clumsy3d;
 
 int main()
 {
-	return 0;
+	clumsy3d::app app;
+	app.run();
 }

@@ -3,7 +3,7 @@
 cmake_minimum_required(VERSION 3.30)
 
 
-project(clumsy3d_entry)
+project(entry)
 
 
 add_executable(
@@ -12,3 +12,6 @@ add_executable(
 )
 
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_23)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE clumsy3d)
+
