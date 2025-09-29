@@ -7,8 +7,10 @@ include(cmake/utils.cmake)
 
 
 set(glfw3_DIR ${CMAKE_SOURCE_DIR}/3rd/glfw3/share/glfw3)
+set(glad_DIR ${CMAKE_SOURCE_DIR}/3rd/glad/share/glad)
 
 
 add_subdirectory(entry)
 add_subdirectory(clumsy3d)
 add_subdirectory(components/cl_event_driver)
+add_subdirectory(components/cl_render)
