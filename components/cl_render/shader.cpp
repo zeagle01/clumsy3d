@@ -47,35 +47,31 @@ namespace clumsy
 			glUniformMatrix4fv(location, 1, GL_FALSE, m);
 		}
 
-		void read(const std::string& name, const std::string& vertex_src, std::string& fragment_src)
+		void read_shader_src(const std::string& shader_name, const std::string& source_code)
 		{
-			m_name = name;
-			std::unordered_map<uint32_t, std::string> shader_sources_by_type;
-			shader_sources_by_type[GL_VERTEX_SHADER] = vertex_src;
-			shader_sources_by_type[GL_FRAGMENT_SHADER] = fragment_src;
-			compile(shader_sources_by_type);
-		}
-
-		void read(const std::string& shader_file)
-		{
-			std::string source_code = read_shader_file(shader_file);
 			auto shader_sources_by_type = split_according_to_shader_type(source_code);
 			compile(shader_sources_by_type);
 
 			// your/shader/file.glsl
-			auto last_slash = shader_file.find_last_of("/\\");
+			auto last_slash = shader_name.find_last_of("/\\");
 			last_slash = last_slash == std::string::npos ? 0 : last_slash;
-			auto last_dot = shader_file.rfind('.');
-			last_dot = last_dot == std::string::npos ? shader_file.size() : last_dot;
+			auto last_dot = shader_name.rfind('.');
+			last_dot = last_dot == std::string::npos ? shader_name.size() : last_dot;
 			auto count = last_dot - last_slash - 1;
 			if (count > 0)
 			{
-				m_name = shader_file.substr(last_slash + 1, count);
+				m_name = shader_name.substr(last_slash + 1, count);
 			}
 			else
 			{
-				printf("can't get name from shader file %s \n", shader_file.c_str());
+				printf("can't get name from shader file %s \n", shader_name.c_str());
 			}
+		}
+
+		void read_file(const std::string& shader_file)
+		{
+			std::string source_code = read_shader_file(shader_file);
+			read_shader_src(shader_file, source_code);
 		}
 
 	private:

@@ -4,7 +4,7 @@ module;
 #include <functional>
 #include <memory>
 
-export module event_driver;
+export module clumsy.event_driver;
 
 
 namespace clumsy

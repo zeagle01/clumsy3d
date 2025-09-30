@@ -3,7 +3,7 @@ module;
 #include "GLFW/glfw3.h"
 #include <iostream>
 
-module event_driver;
+module clumsy.event_driver;
 
 namespace clumsy
 {

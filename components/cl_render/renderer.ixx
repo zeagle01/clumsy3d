@@ -13,8 +13,11 @@ namespace clumsy
 		renderer();
 		~renderer();
 	public:
-		void set_window(void* window);
-		void load_glad(void* proc_addr);
+		void init(void* window, void* proc_addr);
+
+	public:
+		void clear_screen();
+		void add_triangles(float* x, int* triangles, int vNum, int tNum, float* vp);
 		
 	private:
 		struct imp;
