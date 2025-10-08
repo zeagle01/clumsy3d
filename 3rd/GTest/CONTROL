@@ -1,0 +1,8 @@
+Package: gtest
+Version: 1.11.0
+Port-Version: 3
+Architecture: x64-windows
+Multi-Arch: same
+Abi: d3a0e2b411d6d68e16f9d7530d20ae27e4f71ba336dce6252e591c5cd8b4d135
+Description: GoogleTest and GoogleMock testing frameworks
+Type: Port
