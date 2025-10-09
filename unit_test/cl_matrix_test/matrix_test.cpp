@@ -24,7 +24,7 @@ namespace matrix_test
 
 	TEST(matrix_test, add0)
 	{
-		mat2f a
+		mat2f a=
 		{
 			1.f,2.f,
 			3.f,4.f
@@ -111,6 +111,7 @@ namespace matrix_test
 			1.f,
 		};
 
+
 		auto c = static_cast<vec2f> (a * b);
 
 		matrix_equals_expect(c,
@@ -168,6 +169,7 @@ namespace matrix_test
 			1.f,2.f,
 			3.f,4.f
 		};
+
 
 		auto c = static_cast<mat2f> (transpose(a));
 

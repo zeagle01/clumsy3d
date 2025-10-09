@@ -2,6 +2,7 @@
 module;
 
 #include <concepts>
+#include <array>
 
 export module clumsy.matrix;
 
@@ -21,8 +22,8 @@ namespace clumsy
 		T::row;
 		T::col;
 
-		requires  requires { std::is_same_v<decltype(T::row), int>; };
-		requires  requires { std::is_same_v<decltype(T::col), int>; };
+		requires  m.row_num() == T::row;
+		requires  m.column_num() == T::col;
 	};
 
 	template< typename  m0t, typename m1t >
@@ -50,29 +51,18 @@ namespace clumsy
 			static constexpr int apply(int ri, int ci)
 			{
 				return ri * C + ci;
-
 			}
 		};
-
-		struct column_layout
-		{
-			static constexpr int apply(int ri, int ci)
-			{
-				return ri + ci * R;
-
-			}
-		};
-
 	public:
 
 		T& operator()(int ri, int ci) { return data[row_layout::apply(ri, ci)]; }
 		const T& operator()(int ri, int ci) const { return data[row_layout::apply(ri, ci)]; }
 
-		T& operator()(int i) { return data[column_layout::apply(i)]; }
-		const T& operator()(int i) const { return data[column_layout::apply(i)]; }
+		T& operator()(int i) { static_assert(R == 1 || C == 1); return data[row_layout::apply(i, 0)]; }
+		const T& operator()(int i) const { static_assert(R == 1 || C == 1); return data[row_layout::apply(i, 0)]; }
 
-		T& operator()() { return data[0]; }
-		const T& operator()() const { return data[0]; }
+		T& operator()() { static_assert(R == 1 && C == 1); return data[0]; }
+		const T& operator()() const { static_assert(R == 1 && C == 1); return data[0]; }
 
 
 	public:
@@ -80,7 +70,6 @@ namespace clumsy
 	};
 
 	//////////////////////////////////////////////////////
-
 	template<typename T, int R, int C, typename sub_t>
 	struct view : public sub_t 
 	{
@@ -109,11 +98,11 @@ namespace clumsy
 		decltype(auto) operator()(int ri, int ci) const { return sub_t::operator()(ri, ci); }
 		decltype(auto) operator()(int ri, int ci) { return sub_t::operator()(ri, ci); }
 
-		decltype(auto) operator()(int i) const { return sub_t::operator()(i); } 
-		decltype(auto) operator()(int i) { return sub_t::operator()(i); }
+		decltype(auto) operator()(int i) const { static_assert(R == 1 || C == 1); return sub_t::operator()(i); }
+		decltype(auto) operator()(int i) { static_assert(R == 1 || C == 1); return sub_t::operator()(i); }
 
-		decltype(auto) operator()() const { return sub_t::operator()(); } 
-		decltype(auto) operator()() { return sub_t::operator()(); }
+		decltype(auto) operator()() const { static_assert(R == 1 && C == 1); return sub_t::operator()(); }
+		decltype(auto) operator()() { static_assert(R == 1 && C == 1); return sub_t::operator()(); }
 		
 	public:
 		operator matrix<T, R, C>()
