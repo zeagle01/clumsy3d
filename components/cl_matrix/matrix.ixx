@@ -246,4 +246,7 @@ namespace clumsy
 
 	export using vec2f = matrix<float, 2, 1>;
 	export using vec3f = matrix<float, 3, 1>;
+
+	export using vec2i = matrix<int, 2, 1>;
+	export using vec3i = matrix<int, 3, 1>;
 }

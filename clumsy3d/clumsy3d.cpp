@@ -5,8 +5,10 @@ module ;
 
 module clumsy3d;
 
-import clumsy.event_driver;
+import :component;
 
+import clumsy.core;
+import clumsy.event_driver;
 import clumsy.render;
 
 namespace clumsy
@@ -46,7 +48,14 @@ namespace clumsy
 				0,0,0,1,
 			};
 
-			m_renderer.add_triangles(m_pos.data(), m_tris.data(), 3, 1, id);
+			m_entity_system.for_each<component::position_buffer, component::triangle_buffer>
+				(
+					[&,this](const auto& pos, const auto& tri)
+					{
+						m_renderer.add_triangles(&pos[0](0), &tri[0](0), pos.size(), tri.size(), id);
+					}
+				);
+
 		}
 
 	private:
@@ -74,17 +83,26 @@ namespace clumsy
 	private:
 		void create_triangles()
 		{
-			m_pos = 
-			{
-				0,0,0,
-				1,0,0,
-				1,1,0,
-			};
 
-			m_tris =
-			{
-				0,1,2
-			};
+			auto my_triangle = m_entity_system.add_entity();
+
+			m_entity_system.add_component<component::position_buffer>
+			(
+				my_triangle,
+				{
+					{0,0,0},
+					{1,0,0},
+					{1,1,0},
+				}
+			);
+
+			m_entity_system.add_component<component::triangle_buffer>
+			(
+				my_triangle,
+				{
+					{0,1,2},
+				}
+			);
 		}
 
 	private:
@@ -92,9 +110,12 @@ namespace clumsy
 		renderer m_renderer;
 
 	private:
-		std::vector<float>	m_pos;
-		std::vector<int>	m_tris;
+		template<typename T>
+		struct get_type { using type = T::type; };
 
+		using component_list = extract_member_type_list_t<component>;
+
+		entity_system<component_list, get_type> m_entity_system;
 	};
 
 	/////////////////////////////////////////////////////////////////

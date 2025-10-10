@@ -34,7 +34,7 @@ namespace clumsy
 			glClear(GL_COLOR_BUFFER_BIT);
 		}
 
-		void add_triangles(float* x, int* triangles, int vNum, int tNum, float* vp)
+		void add_triangles(const float* x, const int* triangles, int vNum, int tNum, float* vp)
 		{
 
 			m_vertex_array->bind();
@@ -219,7 +219,7 @@ namespace clumsy
 		m_imp->clear_screen();
 	}
 
-	void renderer::add_triangles(float* x, int* triangles, int vNum, int tNum, float* vp)
+	void renderer::add_triangles(const float* x, const int* triangles, int vNum, int tNum, float* vp)
 	{
 		m_imp->add_triangles(x, triangles, vNum, tNum, vp);
 	}

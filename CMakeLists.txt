@@ -15,8 +15,8 @@ add_subdirectory(entry)
 add_subdirectory(clumsy3d)
 add_subdirectory(components/cl_event_driver)
 add_subdirectory(components/cl_render)
-
 add_subdirectory(components/cl_matrix)
+add_subdirectory(components/cl_core)
 
 add_subdirectory(unit_test/cl_matrix_test)
 

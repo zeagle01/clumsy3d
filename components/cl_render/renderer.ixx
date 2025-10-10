@@ -17,7 +17,7 @@ namespace clumsy
 
 	public:
 		void clear_screen();
-		void add_triangles(float* x, int* triangles, int vNum, int tNum, float* vp);
+		void add_triangles(const float* x, const int* triangles, int vNum, int tNum, float* vp);
 		
 	private:
 		struct imp;
