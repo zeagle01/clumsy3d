@@ -15,6 +15,7 @@ PRIVATE
 	ui.cpp  
 	ui_components.cpp  
 	ui_wrappers.cpp  
+	ui_object.cpp  
 	##imgui impl
 	imgui_impl_glfw.h
 	imgui_impl_glfw.cpp

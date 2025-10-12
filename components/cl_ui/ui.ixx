@@ -3,6 +3,7 @@ module;
 
 #include <string>
 #include <concepts>
+#include <functional>
 
 export module clumsy.ui;
 
@@ -21,11 +22,11 @@ namespace clumsy
 		void update();
 
 	public:
-		template<is_in_list<ui_list> ui_cpn, typename cpn_type, typename ...P>
-		requires std::convertible_to<std::remove_cvref_t<cpn_type>, typename ui_cpn::type>
-		void add_ui(const std::string& name, cpn_type&& value,P...p)
+		template<is_in_list<ui_list> ui_cpn ,typename ui_param >
+		requires std::convertible_to<std::decay_t<ui_param>, typename ui_cpn::param>
+		void add_ui(const std::string& name, ui_param param, std::function<void(typename ui_cpn::type)> slot)
 		{
-			m_components.add_ui<ui_cpn>(name, std::forward<cpn_type>(value), p...);
+			m_components.add_ui<ui_cpn>(name, param, slot);
 		}
 
 	private:

@@ -6,6 +6,7 @@ module ;
 module clumsy3d;
 
 import :component;
+import :ui_binder;
 
 import clumsy.core;
 import clumsy.event_driver;
@@ -29,11 +30,7 @@ namespace clumsy
 
 			m_ui_manager.init(m_event_driver.get_window_ptr());
 
-			m_ui_manager.add_ui<ui::button>("my_button",[]() { printf(" hello , i'm here!\n"); });
-			m_ui_manager.add_ui<ui::check_box>("my_check_box", m_my_bool);
-			m_ui_manager.add_ui<ui::slider_float>("my_float0", m_my_float0, 0.f, 100.f);
-			m_ui_manager.add_ui<ui::input_float>("my_float1", m_my_float1);
-			m_ui_manager.add_ui<ui::input_int>("my_int", m_my_int);
+			ui_binder::apply(m_ui_manager, m_entity_system);
 
 			create_triangles();
 				
@@ -128,11 +125,8 @@ namespace clumsy
 		float m_my_float1 = 0;
 
 	private:
-		template<typename T>
-		struct get_type { using type = T::type; };
-
+		template<typename T> struct get_type { using type = T::type; };
 		using component_list = extract_member_type_list_t<component>;
-
 		entity_system<component_list, get_type> m_entity_system;
 	};
 

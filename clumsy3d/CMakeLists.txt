@@ -18,7 +18,10 @@ PRIVATE
 	clumsy3d.cpp  
 	component.cpp
 	update_table.cpp
+	input_table.cpp
 	update_functions.cpp
+	entity_relation.cpp
+	ui_binder.cpp
 )
 
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_23)

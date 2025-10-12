@@ -222,12 +222,15 @@ namespace clumsy
 	export
 	using empty_type_list = type_list<>;
 
+	export struct empty {};
+	export constexpr empty empty_v;
 }
 
 
 namespace clumsy
 {
 	/////////////////////For_Each_Type///////////////////////
+	export
 	template<typename type_holder>
 	struct for_each_type;
 

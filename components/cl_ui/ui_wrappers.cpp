@@ -19,31 +19,28 @@ namespace clumsy
 	template<>
 	struct ui_wrapper<ui::button>
 	{
-		static void apply(const std::string& name, std::function<void()> fn)
+		static bool apply(const std::string& name, empty, empty)
 		{
-			if (ImGui::Button(name.c_str()))
-			{
-				fn();
-			}
+			return ImGui::Button(name.c_str());
 		}
 	};
 
 	template<>
 	struct ui_wrapper<ui::check_box>
 	{
-		static void apply(const std::string& name, bool& value)
+		static bool apply(const std::string& name, bool& value, empty)
 		{
-			ImGui::Checkbox(name.c_str(), &value);
+			return ImGui::Checkbox(name.c_str(), &value);
 		}
 	};
 
 	template<>
 	struct ui_wrapper<ui::input_float>
 	{
-		static void apply(const std::string& name, float& value)
+		static bool apply(const std::string& name, float& value, empty)
 		{
 			//ImGui::InputFloat(name.c_str(), &value, 1e-2f, 1e-1f, "%f", ImGuiInputTextFlags_EnterReturnsTrue);
-			ImGui::InputFloat(name.c_str(), &value, 1e-2f, 1e-1f, "%f");
+			return ImGui::InputFloat(name.c_str(), &value, 1e-2f, 1e-1f, "%f");
 		}
 
 	};
@@ -51,10 +48,10 @@ namespace clumsy
 	template<>
 	struct ui_wrapper<ui::input_int>
 	{
-		static void apply(const std::string& name, int& value)
+		static bool apply(const std::string& name, int& value, empty)
 		{
 			//ImGui::InputInt(name.c_str(), &value, 1, 100, ImGuiInputTextFlags_EnterReturnsTrue);
-			ImGui::InputInt(name.c_str(), &value, 1, 100);
+			return ImGui::InputInt(name.c_str(), &value, 1, 100);
 		}
 
 	};
@@ -62,9 +59,9 @@ namespace clumsy
 	template<>
 	struct ui_wrapper<ui::slider_float>
 	{
-		static void apply(const std::string& name, float& value, float min, float max)
+		static bool apply(const std::string& name, float& value, range rng)
 		{
-			ImGui::SliderFloat(name.c_str(), &value, min, max ,"%2.2f");
+			return ImGui::SliderFloat(name.c_str(), &value, rng.min, rng.max, "%2.2f");
 		}
 
 	};

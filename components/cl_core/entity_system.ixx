@@ -37,6 +37,30 @@ namespace clumsy
 		}
 
 		template<is_in_list<type_list> component>
+		void add_component(uint64_t id )
+		{
+			auto key = get_key<component>();
+
+			m_entities[id][key] = std::make_shared<typename type_getter<component>::type>();
+		}
+
+		template<is_in_list<type_list> component>
+		auto& get_component(uint64_t id)
+		{
+			auto key = get_key<component>();
+
+			return *std::static_pointer_cast<typename type_getter<component>::type>(m_entities.at(id).at(key));
+		}
+
+		template<is_in_list<type_list> component>
+		const auto& get_component(uint64_t id) const
+		{
+			auto key = get_key<component>();
+
+			return *std::static_pointer_cast<typename type_getter<component>::type>(m_entities.at(id).at(key));
+		}
+
+		template<is_in_list<type_list> component>
 		void remove_component(uint64_t id)
 		{
 			auto key = get_key<component>();
