@@ -16,7 +16,6 @@ PUBLIC
 	clumsy3d.ixx  
 PRIVATE
 	clumsy3d.cpp  
-	config_define_helper.h  
 	component.cpp
 	update_table.cpp
 	update_functions.cpp
@@ -28,3 +27,4 @@ target_link_libraries(${PROJECT_NAME} PRIVATE cl_event_driver)
 target_link_libraries(${PROJECT_NAME} PRIVATE cl_render)
 target_link_libraries(${PROJECT_NAME} PRIVATE cl_core)
 target_link_libraries(${PROJECT_NAME} PRIVATE cl_matrix)
+target_link_libraries(${PROJECT_NAME} PRIVATE cl_ui)

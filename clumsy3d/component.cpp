@@ -1,7 +1,7 @@
 
 module;
 
-#include "config_define_helper.h"
+#include "cl_core/config_define_helper.h"
 
 #include <vector>
 

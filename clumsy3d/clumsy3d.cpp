@@ -10,6 +10,7 @@ import :component;
 import clumsy.core;
 import clumsy.event_driver;
 import clumsy.render;
+import clumsy.ui;
 
 namespace clumsy
 {
@@ -26,6 +27,14 @@ namespace clumsy
 
 			init_renderer(m_event_driver.get_window_ptr(), m_event_driver.get_proc_address());
 
+			m_ui_manager.init(m_event_driver.get_window_ptr());
+
+			m_ui_manager.add_ui<ui::button>("my_button",[]() { printf(" hello , i'm here!\n"); });
+			m_ui_manager.add_ui<ui::check_box>("my_check_box", m_my_bool);
+			m_ui_manager.add_ui<ui::slider_float>("my_float0", m_my_float0, 0.f, 100.f);
+			m_ui_manager.add_ui<ui::input_float>("my_float1", m_my_float1);
+			m_ui_manager.add_ui<ui::input_int>("my_int", m_my_int);
+
 			create_triangles();
 				
 		}
@@ -38,7 +47,10 @@ namespace clumsy
 	private:
 		void update(double x, double y)
 		{
+
 			m_renderer.clear_screen();
+
+			m_ui_manager.update();
 
 			float id[]
 			{
@@ -108,6 +120,12 @@ namespace clumsy
 	private:
 		event_driver m_event_driver;
 		renderer m_renderer;
+		ui_manager m_ui_manager;
+
+		bool m_my_bool = true;
+		int m_my_int = 0;
+		float m_my_float0 = 0;
+		float m_my_float1 = 0;
 
 	private:
 		template<typename T>
