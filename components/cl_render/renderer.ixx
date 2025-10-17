@@ -2,6 +2,7 @@
 module;
 
 #include <memory>
+#include <array>
 
 export module clumsy.render;
 
@@ -18,6 +19,7 @@ namespace clumsy
 	public:
 		void clear_screen();
 		void add_triangles(const float* x, const int* triangles, int vNum, int tNum, float* vp);
+		void add_triangles(const float* x, const int* triangles, int vNum, int tNum, float* vp, const std::array<float, 3>& color);
 		
 	private:
 		struct imp;

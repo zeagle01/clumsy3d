@@ -31,8 +31,6 @@ namespace clumsy
 			m_ui_manager.init(m_event_driver.get_window_ptr());
 
 			ui_binder::apply(m_ui_manager, m_entity_system);
-
-			create_triangles();
 				
 		}
 
@@ -49,7 +47,7 @@ namespace clumsy
 
 			m_ui_manager.update();
 
-			float id[]
+			float identity[]
 			{
 				1,0,0,0,
 				0,1,0,0,
@@ -57,13 +55,26 @@ namespace clumsy
 				0,0,0,1,
 			};
 
+
 			m_entity_system.for_each<component::position_buffer, component::triangle_buffer>
 				(
 					[&,this](const auto& pos, const auto& tri)
 					{
-						m_renderer.add_triangles(&pos[0](0), &tri[0](0), pos.size(), tri.size(), id);
+						m_renderer.add_triangles(&pos[0](0), &tri[0](0), pos.size(), tri.size(), identity);
 					}
 				);
+
+			auto obj = m_entity_system.get_entities<component::selected_entities>();
+			auto selected = m_entity_system.get_component<component::selected_entities>(obj.back());
+			for (auto id : selected)
+			{
+				if (m_entity_system.contains<component::position_buffer, component::triangle_buffer>(id))
+				{
+					const auto& pos = m_entity_system.get_component<component::position_buffer>(id);
+					const auto& tri = m_entity_system.get_component<component::triangle_buffer>(id);
+					m_renderer.add_triangles(&pos[0](0), &tri[0](0), pos.size(), tri.size(), identity, { 0,0,1 });
+				}
+			}
 
 		}
 
@@ -90,29 +101,6 @@ namespace clumsy
 			m_renderer.init(window, proc_address);
 		}
 	private:
-		void create_triangles()
-		{
-
-			auto my_triangle = m_entity_system.add_entity();
-
-			m_entity_system.add_component<component::position_buffer>
-			(
-				my_triangle,
-				{
-					{0,0,0},
-					{1,0,0},
-					{1,1,0},
-				}
-			);
-
-			m_entity_system.add_component<component::triangle_buffer>
-			(
-				my_triangle,
-				{
-					{0,1,2},
-				}
-			);
-		}
 
 	private:
 		event_driver m_event_driver;

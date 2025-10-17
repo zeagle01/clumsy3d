@@ -21,6 +21,7 @@ PRIVATE
 	input_table.cpp
 	update_functions.cpp
 	entity_relation.cpp
+	entity_relation_functions.cpp
 	ui_binder.cpp
 )
 

@@ -208,6 +208,7 @@ namespace clumsy
 		return view<m0t::type, m0t::row, m0t::col, expression_add<m0t, m1t>>{ m0, m1 };
 	}
 
+
 	export
 	template< is_indexable_2d m0t, is_indexable_2d m1t >
 	requires is_same_shape<m0t,m1t>
@@ -224,6 +225,13 @@ namespace clumsy
 		return view<m0t::type, m0t::row, m1t::col, expression_multiply<m0t, m1t>>{ m0, m1 };
 	}
 
+	export
+		template< typename T, int R, int C, is_indexable_2d m1t >
+		requires is_same_shape<matrix<T, R, C>, m1t>
+	void operator+=(matrix<T, R, C>& m0, const m1t& m1)
+	{
+		m0 = m0 + m1;
+	}
 
 	//////////////////////////////////////////////////////
 	export

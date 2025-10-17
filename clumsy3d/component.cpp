@@ -4,6 +4,7 @@ module;
 #include "cl_core/config_define_helper.h"
 
 #include <vector>
+#include <set>
 
 module clumsy3d:component;
 
@@ -12,8 +13,18 @@ import clumsy.core;
 
 namespace clumsy
 {
+	struct directed_edge
+	{
+		uint64_t sender;
+		uint64_t receiver;
+	};
+
 	struct component
 	{
+
+		ENTRY(id,							USE(type, uint64_t);						VALUE(init_value,empty_v);			LIST(tag));
+		ENTRY(selected_entities,			USE(type, std::vector<uint64_t>);			VALUE(init_value,empty_v);			LIST(tag));
+		ENTRY(sync_move_pairs,				USE(type, std::vector<directed_edge>);		VALUE(init_value,empty_v);			LIST(tag));
 
 		ENTRY(resolution_x,					USE(type, int);								VALUE(init_value,20);				LIST(tag));
 		ENTRY(resolution_y,					USE(type, int);								VALUE(init_value,20);				LIST(tag));
@@ -21,8 +32,8 @@ namespace clumsy
 		ENTRY(length_x,						USE(type, float);							VALUE(init_value,1.f);				LIST(tag));
 		ENTRY(length_y,						USE(type, float);							VALUE(init_value,1.f);				LIST(tag));
 
-		ENTRY(position_buffer,				USE(type, std::vector<vec3f>);				VALUE(init_value,nullptr);			LIST(tag));
-		ENTRY(triangle_buffer,				USE(type, std::vector<vec3i>);				VALUE(init_value,nullptr);			LIST(tag));
+		ENTRY(position_buffer,				USE(type, std::vector<vec3f>);				VALUE(init_value,empty_v);			LIST(tag));
+		ENTRY(triangle_buffer,				USE(type, std::vector<vec3i>);				VALUE(init_value,empty_v);			LIST(tag));
 
 	};
 

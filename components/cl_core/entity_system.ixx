@@ -21,7 +21,6 @@ namespace clumsy
 	class entity_system
 	{
 	public:
-
 		uint64_t add_entity()
 		{
 			m_entities[m_id] = {};
@@ -68,6 +67,13 @@ namespace clumsy
 		}
 
 	public:
+
+		template<is_in_list<type_list> ... component>
+		bool contains(uint64_t id) const
+		{
+			return  (m_entities.at(id).contains(typeid(component))&&...);
+		}
+
 		template<is_in_list<type_list> ... component>
 		void for_each(std::function<void(typename type_getter<component>::type ...) > fn)
 		{
@@ -90,6 +96,29 @@ namespace clumsy
 				}
 			}
 		}
+
+		template<is_in_list<type_list> ... component>
+		auto get_entities() const
+		{
+			std::vector<uint64_t> ret;
+			for (auto& [id, components] : m_entities)
+			{
+				bool has_components = (m_entities.at(id).contains(typeid(component))&&...);
+
+				if (has_components)
+				{
+					ret.emplace_back(id);
+				}
+			}
+			return ret;
+		}
+
+		//template<>
+		//std::vector<uint64_t> get_entities() const
+		//{
+		//	return std::vector<uint64_t>();
+		//}
+
 	private:
 		using key_t = std::type_index;
 

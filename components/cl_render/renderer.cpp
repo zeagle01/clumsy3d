@@ -36,6 +36,11 @@ namespace clumsy
 
 		void add_triangles(const float* x, const int* triangles, int vNum, int tNum, float* vp)
 		{
+			add_triangles(x, triangles, vNum, tNum, vp, { 1,0,0 });
+		}
+
+		void add_triangles(const float* x, const int* triangles, int vNum, int tNum, float* vp, const std::array<float, 3>& color)
+		{
 
 			m_vertex_array->bind();
 			m_vertex_array->set_index_buffer(triangles, tNum * 3);
@@ -57,7 +62,7 @@ namespace clumsy
 			if (m_is_enable_fill)
 			{
 				set_polygon_mode(false);
-				m_shader->upload_uniform_vec3("u_obj_color", { 1,0,0 });
+				m_shader->upload_uniform_vec3("u_obj_color", color);
 				draw_iendxes(GL_TRIANGLES);
 			}
 
@@ -222,6 +227,11 @@ namespace clumsy
 	void renderer::add_triangles(const float* x, const int* triangles, int vNum, int tNum, float* vp)
 	{
 		m_imp->add_triangles(x, triangles, vNum, tNum, vp);
+	}
+
+	void renderer::add_triangles(const float* x, const int* triangles, int vNum, int tNum,float* vp, const std::array<float, 3>& color)
+	{
+		m_imp->add_triangles(x, triangles, vNum, tNum, vp, color);
 	}
 
 }
