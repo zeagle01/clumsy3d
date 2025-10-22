@@ -55,6 +55,11 @@ namespace  clumsy
 		//	ImGui::RenderPlatformWindowsDefault();
 		//}
 	}
+
+	void ui_manager::clear()
+	{
+		m_components.clear();
+	}
 }
 
 

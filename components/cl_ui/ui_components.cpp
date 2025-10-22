@@ -52,6 +52,10 @@ namespace clumsy
 				f();
 			}
 		}
+		void clear()
+		{
+			m_slots.clear();
+		}
 
 	private:
 		std::vector<std::function<void()>> m_slots;

@@ -20,9 +20,10 @@ PRIVATE
 	update_table.cpp
 	input_table.cpp
 	update_functions.cpp
-	entity_relation.cpp
-	entity_relation_functions.cpp
 	ui_binder.cpp
+	entity_manager.cpp
+	invoke_update_function.cpp
+	common_structs.cpp
 )
 
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_23)

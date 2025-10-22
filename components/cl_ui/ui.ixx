@@ -20,6 +20,7 @@ namespace clumsy
 	public:
 		void init(void* window);
 		void update();
+		void clear();
 
 	public:
 		template<is_in_list<ui_list> ui_cpn ,typename ui_param >

@@ -21,10 +21,18 @@ namespace clumsy
 	class entity_system
 	{
 	public:
+		using components = type_list;
+
+	public:
 		uint64_t add_entity()
 		{
 			m_entities[m_id] = {};
 			return m_id++;
+		}
+
+		void remove_entity(uint64_t id)
+		{
+			m_entities.erase(id);
 		}
 
 		template<is_in_list<type_list> component>
@@ -48,7 +56,7 @@ namespace clumsy
 		{
 			auto key = get_key<component>();
 
-			return *std::static_pointer_cast<typename type_getter<component>::type>(m_entities.at(id).at(key));
+			return *std::static_pointer_cast<typename type_getter<component>::type>(m_entities[id][key]);
 		}
 
 		template<is_in_list<type_list> component>
@@ -71,7 +79,7 @@ namespace clumsy
 		template<is_in_list<type_list> ... component>
 		bool contains(uint64_t id) const
 		{
-			return  (m_entities.at(id).contains(typeid(component))&&...);
+			return  m_entities.contains(id) && (m_entities.at(id).contains(typeid(component))&&...);
 		}
 
 		template<is_in_list<type_list> ... component>

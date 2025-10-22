@@ -8,23 +8,20 @@ module;
 
 module clumsy3d:component;
 
+import :common_structs;
+
 import clumsy.matrix;
 import clumsy.core;
 
 namespace clumsy
 {
-	struct directed_edge
-	{
-		uint64_t sender;
-		uint64_t receiver;
-	};
 
 	struct component
 	{
 
-		ENTRY(id,							USE(type, uint64_t);						VALUE(init_value,empty_v);			LIST(tag));
-		ENTRY(selected_entities,			USE(type, std::vector<uint64_t>);			VALUE(init_value,empty_v);			LIST(tag));
-		ENTRY(sync_move_pairs,				USE(type, std::vector<directed_edge>);		VALUE(init_value,empty_v);			LIST(tag));
+		ENTRY(id,							USE(type, uint64_t);						VALUE(init_value,empty_v);			LIST(tag,field_tag::read_only,field_tag::create_on_new_entity));
+		ENTRY(selected_entities,			USE(type, std::vector<uint64_t>);			VALUE(init_value,empty_v);			LIST(tag,field_tag::singleton));
+		ENTRY(sync_move_pairs,				USE(type, std::vector<directed_edge>);		VALUE(init_value,empty_v);			LIST(tag,field_tag::singleton));
 
 		ENTRY(resolution_x,					USE(type, int);								VALUE(init_value,20);				LIST(tag));
 		ENTRY(resolution_y,					USE(type, int);								VALUE(init_value,20);				LIST(tag));

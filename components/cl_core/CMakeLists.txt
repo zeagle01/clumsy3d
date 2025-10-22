@@ -14,6 +14,7 @@ PUBLIC
 	entity_system.ixx  
 	type_list.ixx
 	member_extractor.ixx
+	get_type_name.ixx
 PUBLIC
 	include/cl_core/config_define_helper.h
 PRIVATE

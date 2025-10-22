@@ -220,6 +220,21 @@ namespace clumsy
 
 
 	export
+	template<typename tl, template <typename> typename pred>
+	struct filter_list;
+
+	template< typename ...T, template <typename> typename pred>
+	struct filter_list<type_list<T...>, pred>
+	{
+		template<typename U>
+		using wrap_with_list = std::conditional_t<pred<U>::value, type_list<U>, type_list<>>;
+
+		using type = merge_list_t< wrap_with_list<T>...>;
+	};
+
+
+
+	export
 	using empty_type_list = type_list<>;
 
 	export struct empty {};

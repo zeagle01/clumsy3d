@@ -7,6 +7,7 @@ module clumsy3d;
 
 import :component;
 import :ui_binder;
+import :entity_manager;
 
 import clumsy.core;
 import clumsy.event_driver;
@@ -29,8 +30,6 @@ namespace clumsy
 			init_renderer(m_event_driver.get_window_ptr(), m_event_driver.get_proc_address());
 
 			m_ui_manager.init(m_event_driver.get_window_ptr());
-
-			ui_binder::apply(m_ui_manager, m_entity_system);
 				
 		}
 
@@ -45,6 +44,8 @@ namespace clumsy
 
 			m_renderer.clear_screen();
 
+			m_ui_manager.clear();
+			ui_binder::apply(m_ui_manager, m_entity_system);
 			m_ui_manager.update();
 
 			float identity[]
@@ -100,22 +101,16 @@ namespace clumsy
 		{
 			m_renderer.init(window, proc_address);
 		}
-	private:
 
 	private:
 		event_driver m_event_driver;
 		renderer m_renderer;
 		ui_manager m_ui_manager;
 
-		bool m_my_bool = true;
-		int m_my_int = 0;
-		float m_my_float0 = 0;
-		float m_my_float1 = 0;
-
 	private:
 		template<typename T> struct get_type { using type = T::type; };
 		using component_list = extract_member_type_list_t<component>;
-		entity_system<component_list, get_type> m_entity_system;
+		entity_manager<component_list, get_type> m_entity_system;
 	};
 
 	/////////////////////////////////////////////////////////////////
