@@ -3,6 +3,7 @@ module;
 #include <utility>
 #include <concepts>
 #include <vector>
+#include <functional>
 
 module clumsy3d:invoke_update_function;
 
@@ -84,6 +85,7 @@ namespace clumsy
 
 	//////////////////////
 
+	using triggerer = std::function<bool()>;
 
 	template<typename out_list, typename in_list, typename index_map, typename entity_system>
 	struct invoke_update_function;
@@ -94,9 +96,9 @@ namespace clumsy
 		using out_list = type_list<out_cpn...>;
 
 		template<typename F, typename ...P >
-		static void apply(entity_system& p_entity_system, P&&...p)
+		static void apply(entity_system& p_entity_system, triggerer trig, P&&...p)
 		{
-			with_in_out_list < in_list > ::template apply<F>(p_entity_system, std::forward<P>(p)...);
+			with_in_out_list < in_list > ::template apply<F>(p_entity_system, trig, std::forward<P>(p)...);
 		}
 	private:
 		template<typename in_list_t>
@@ -106,9 +108,9 @@ namespace clumsy
 		struct with_in_out_list<type_list<in_cpn...>>
 		{
 			template<typename F, typename ...P >
-			static void apply(entity_system& p_entity_system, P&&...p)
+			static void apply(entity_system& p_entity_system, triggerer& trig, P&&...p)
 			{
-				imp<index_map>::template apply<F>(p_entity_system, std::forward<P>(p)...);
+				imp<index_map>::template apply<F>(p_entity_system, trig, std::forward<P>(p)...);
 			}
 
 		private:
@@ -122,56 +124,137 @@ namespace clumsy
 				return p_entity_system.get_component<cpn>(id);
 			}
 
+			template<typename cpn>
+			static auto create_or_get_value(const std::vector<uint64_t >& ids, entity_system& p_entity_system)
+			{
+				std::vector<typename cpn::type*>  ret;
+				for (auto id : ids)
+				{
+					if (!p_entity_system.contains<cpn>(id))
+					{
+						p_entity_system.add_component<cpn>(id);
+					}
+					ret.push_back(&p_entity_system.get_component<cpn>(id));
+				}
+
+				return ret;
+			}
+
+			template<typename cpn>
+			static auto get_values(const std::vector<uint64_t >& ids, entity_system& p_entity_system)
+			{
+				std::vector<cpn::type>  ret;
+				for (auto id : ids)
+				{
+					ret.push_back(p_entity_system.get_component<cpn>(id));
+				}
+				return ret;
+			}
+
 		private:
 			template<typename index_map_t>
 			struct imp;
 
 			template<typename out_range, typename in_range>
-			struct imp<entity_mapper::all_to_one<out_range,in_range>>
+			struct imp<entity_mapper::all_to_all<out_range,in_range>>
 			{
 				template<typename F, typename ...P >
-				static void apply(entity_system& p_entity_system, P&&...p)
+				static void apply(entity_system& p_entity_system, triggerer& trig, P&&...p)
 				{
-					auto in_entities = get_entity_range<in_range, in_list>::apply(p_entity_system);
-					auto out_entities = get_entity_range<out_range, out_list>::apply(p_entity_system);
 
-					for (auto out_id : out_entities)
+					auto in_entities = get_entity_range<in_range, in_list>::apply(p_entity_system);
+					if constexpr (std::is_same_v<out_range, entity_range::create>)
 					{
-						F::apply(   create_or_get_value<out_cpn>(out_id, p_entity_system)... , get_values<in_cpn>(in_entities, p_entity_system)..., std::forward<P>(p)...);
+						if (trig())
+						{
+							auto out_entities = get_entity_range<out_range, out_list>::apply(p_entity_system);
+							F::apply(create_or_get_value<out_cpn>(out_entities, p_entity_system)..., get_values<in_cpn>(in_entities, p_entity_system)..., std::forward<P>(p)...);
+						}
+
+					}
+					else
+					{
+						auto out_entities = get_entity_range<out_range, out_list>::apply(p_entity_system);
+						if (out_entities.empty())
+						{
+							return;
+						}
+
+						if (trig())
+						{
+							F::apply(create_or_get_value<out_cpn>(out_entities, p_entity_system)..., get_values<in_cpn>(in_entities, p_entity_system)..., std::forward<P>(p)...);
+						}
 					}
 
 				}
 			private:
-				template<typename cpn>
-				static auto get_values(const std::vector<uint64_t >& ids, entity_system& p_entity_system)
+			};
+
+			template<typename out_range, typename in_range>
+			struct imp<entity_mapper::all_to_one<out_range,in_range>>
+			{
+				template<typename F, typename ...P >
+				static void apply(entity_system& p_entity_system, triggerer& trig, P&&...p)
 				{
-					std::vector<cpn::type>  ret;
-					for (auto id : ids)
+
+					auto in_entities = get_entity_range<in_range, in_list>::apply(p_entity_system);
+					if constexpr (std::is_same_v<out_range, entity_range::create>)
 					{
-						ret.push_back(p_entity_system.get_component<cpn>(id));
+						if (trig())
+						{
+							auto out_entities = get_entity_range<out_range, out_list>::apply(p_entity_system);
+							for (auto out_id : out_entities)
+							{
+								F::apply(create_or_get_value<out_cpn>(out_id, p_entity_system)..., get_values<in_cpn>(in_entities, p_entity_system)..., std::forward<P>(p)...);
+							}
+						}
+
 					}
-					return ret;
+					else
+					{
+						auto out_entities = get_entity_range<out_range, out_list>::apply(p_entity_system);
+						if (out_entities.empty())
+						{
+							return;
+						}
+
+						if (trig())
+						{
+							for (auto out_id : out_entities)
+							{
+								F::apply(create_or_get_value<out_cpn>(out_id, p_entity_system)..., get_values<in_cpn>(in_entities, p_entity_system)..., std::forward<P>(p)...);
+							}
+						}
+					}
+
 				}
-
-
 			};
 
 			template< typename id_map, typename in_range>
 			struct imp<entity_mapper::one_to_one<id_map, in_range>>
 			{
 				template<typename F, typename ...P >
-				static void apply(entity_system& p_entity_system, P&&...p)
+				static void apply(entity_system& p_entity_system, triggerer& trig, P&&...p)
 				{
 					auto in_entities = get_entity_range<in_range, in_list>::apply(p_entity_system);
 
-					for (int i = 0; i < in_entities.size(); i++)
+					if (in_entities.empty())
 					{
-						auto d_edge = index_mapper<id_map>::apply(i, in_entities);
-						auto in_id = d_edge.sender;
-						auto out_id = d_edge.receiver;
-
-						F::apply( create_or_get_value<out_cpn>(out_id, p_entity_system)..., p_entity_system.get_component<in_cpn>(in_id)...,std::forward<P>(p)...);
+						return;
 					}
+
+					if(trig())
+					{
+						for (int i = 0; i < in_entities.size(); i++)
+						{
+							auto d_edge = index_mapper<id_map>::apply(i, in_entities);
+							auto in_id = d_edge.sender;
+							auto out_id = d_edge.receiver;
+
+							F::apply(create_or_get_value<out_cpn>(out_id, p_entity_system)..., p_entity_system.get_component<in_cpn>(in_id)..., std::forward<P>(p)...);
+						}
+					}
+
 				}
 
 			};
@@ -180,14 +263,23 @@ namespace clumsy
 			struct imp<entity_mapper::erase< in_range>>
 			{
 				template<typename F, typename ...P >
-				static void apply(entity_system& p_entity_system, P&&...p)
+				static void apply(entity_system& p_entity_system, triggerer& trig, P&&...p)
 				{
 					auto in_entities = get_entity_range<in_range, in_list>::apply(p_entity_system);
 
-					for (auto id : in_entities)
+					if (in_entities.empty())
 					{
-						p_entity_system.remove_entity(id);
+						return;
 					}
+
+					if (trig())
+					{
+						for (auto id : in_entities)
+						{
+							p_entity_system.remove_entity(id);
+						}
+					}
+
 				}
 
 			};

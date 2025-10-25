@@ -2,6 +2,7 @@
 module;
 
 #include <iostream>
+#include <functional> 
 
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
@@ -30,7 +31,7 @@ namespace  clumsy
 		ImGui::StyleColorsDark();
 	}
 
-	void ui_manager::update()
+	void ui_manager::update(std::function<void()> fn)
 	{
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
@@ -40,7 +41,8 @@ namespace  clumsy
 		//ImGui::Text("ui components ");
 		//ImGui::ShowDemoWindow();
 
-		m_components.invoke_slots();
+		//m_components.invoke_slots();
+		fn();
 
 		ImGui::End();
 

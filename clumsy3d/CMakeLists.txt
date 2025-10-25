@@ -22,6 +22,7 @@ PRIVATE
 	update_functions.cpp
 	ui_binder.cpp
 	entity_manager.cpp
+	commands.cpp
 	invoke_update_function.cpp
 	common_structs.cpp
 )

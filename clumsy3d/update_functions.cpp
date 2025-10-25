@@ -13,18 +13,17 @@ import clumsy.core;
 namespace clumsy
 {
 
-	struct assign
+	struct do_nothing
 	{
-		template<typename d,typename s>  
-		static void apply(d& p_d, const s& p_s)
+		static void apply(...) 
 		{
-			p_d = p_s;
 		}
 	};
 
+
 	struct get_last
 	{
-		static void apply(std::vector<uint64_t>& id, const std::vector<uint64_t>& all_entities, empty)
+		static void apply(std::vector<uint64_t>& id, const std::vector<uint64_t>& all_entities )
 		{
 			static uint64_t offset = 0;
 			auto size = all_entities.size();
@@ -35,7 +34,7 @@ namespace clumsy
 
 	struct set_sync_pair
 	{
-		static void apply(std::vector<directed_edge>& edges, const std::vector<uint64_t>& all_entities, empty)
+		static void apply(std::vector<directed_edge>& edges, const std::vector<uint64_t>& all_entities )
 		{
 			if (all_entities.size() > 1)
 			{
@@ -46,7 +45,7 @@ namespace clumsy
 
 	struct build_triangle
 	{
-		static void apply(std::vector<vec3f>& pos, std::vector<vec3i>& tri, empty )
+		static void apply(std::vector<vec3f>& pos, std::vector<vec3i>& tri )
 		{
 			static float offset = 0.f;
 			pos =
@@ -63,7 +62,7 @@ namespace clumsy
 
 	struct offsetting_pos
 	{
-		static void apply(std::vector<vec3f>& pos_out, const std::vector<vec3f>& pos_in,empty)
+		static void apply(std::vector<vec3f>& pos_out, const std::vector<vec3f>& pos_in)
 		{
 			vec3f center = {};
 			for (int i = 0; i < pos_in.size(); i++)

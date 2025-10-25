@@ -44,9 +44,15 @@ namespace clumsy
 
 			m_renderer.clear_screen();
 
-			m_ui_manager.clear();
-			ui_binder::apply(m_ui_manager, m_entity_system);
-			m_ui_manager.update();
+			//m_ui_manager.clear();
+			m_ui_manager.update(
+				[&]()
+				{
+					ui_binder::apply(m_ui_manager, m_entity_system);
+				}
+			);
+			//ui_binder::apply(m_ui_manager, m_entity_system);
+			//m_ui_manager.update();
 
 			float identity[]
 			{

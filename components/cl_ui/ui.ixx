@@ -8,19 +8,22 @@ module;
 export module clumsy.ui;
 
 export import :ui_type_table;
+export import :ui_factory;
 
 import clumsy.core;
 import :ui_components;
 
 namespace clumsy
 {
+
 	export
 	class ui_manager
 	{
 	public:
 		void init(void* window);
-		void update();
+		//void update();
 		void clear();
+		void update(std::function<void()> fn);
 
 	public:
 		template<is_in_list<ui_list> ui_cpn ,typename ui_param >

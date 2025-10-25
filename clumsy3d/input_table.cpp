@@ -33,7 +33,7 @@ namespace clumsy
 		ENTRY(remove_selected,		FUNC(empty);					OUT(empty);														INDEX_MAP(erase<entity_range::value_of<cpn::selected_entities>>);									IN();											UI(button)			UI_PARAM(empty_v));
 		ENTRY(add_sync_pair,		FUNC(set_sync_pair);			OUT(cpn::sync_move_pairs);										INDEX_MAP(all_to_one<entity_range::all,entity_range::all>);											IN(cpn::id);									UI(button)			UI_PARAM(empty_v));
 		ENTRY(sync_move,			FUNC(offsetting_pos);			OUT(cpn::position_buffer);										INDEX_MAP(one_to_one<index_map::directed_edge, entity_range::value_of<cpn::sync_move_pairs>>);		IN(cpn::position_buffer);						UI(button)			UI_PARAM(empty_v));
-		ENTRY(set_resolution_x,		FUNC(assign);					OUT(cpn::resolution_x);											INDEX_MAP(one_to_one<index_map::identity,entity_range::value_of<cpn::selected_entities>>);			IN();											UI(input_int)		UI_PARAM(empty_v));
+		ENTRY(set_resolution_x,		FUNC(do_nothing);				OUT(cpn::resolution_x);											INDEX_MAP(all_to_all<entity_range::value_of<cpn::selected_entities>,entity_range::none>);			IN();											UI(input_int)		UI_PARAM(empty_v));
 
 		//ENTRY(bind_resolution_x,		FUNC(assign);						OUT(selected_entity<cpn::resolution_x>);												IN()														UI(input_int)		UI_PARAM(empty_v));
 		//ENTRY(bind_resolution_y,		FUNC(assign);						OUT(selected_entity<cpn::resolution_y>);												IN()														UI(input_int)		UI_PARAM(empty_v));

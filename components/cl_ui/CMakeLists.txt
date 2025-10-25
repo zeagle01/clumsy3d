@@ -11,6 +11,7 @@ PUBLIC
 	FILES 
 	ui.ixx  
 	ui_type_table.ixx  
+	ui_factory.ixx  
 PRIVATE
 	ui.cpp  
 	ui_components.cpp  

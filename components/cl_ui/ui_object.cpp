@@ -39,4 +39,27 @@ namespace clumsy
 		type			m_value;
 	};
 
+	template<is_in_list<ui_list> cpn >
+	struct ui_object_2
+	{
+		using param_t = typename cpn::param;
+		using type = typename cpn::type;
+
+		ui_object_2(const std::string& name, param_t p,type& value)
+			:m_name(name), m_param(p), m_value(value)
+		{
+		}
+
+		bool operator()()
+		{
+			return ui_wrapper < cpn >::apply(m_name.c_str(), m_value, m_param);
+
+		}
+
+	private:
+		std::string		m_name;
+		param_t			m_param;
+		type&			m_value;
+	};
+
 }
