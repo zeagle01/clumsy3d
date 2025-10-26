@@ -23,19 +23,19 @@ namespace clumsy
 
 	struct ui_binder
 	{
-		template<typename entity_system>
-		static void apply(ui_manager& p_ui_manager, entity_system& p_entity_system)
+		template<typename entity_system >
+		static void apply(ui_manager& p_ui_manager, entity_system& p_entity_system )
 		{
 
-			clumsy::for_each_type<input_table_type_list>::template apply<bind_ui>(p_ui_manager, p_entity_system);
+			clumsy::for_each_type<input_table_type_list>::template apply<bind_ui>(p_ui_manager, p_entity_system );
 
 		}
 
 	private:
 		struct bind_ui
 		{
-			template<is_in_list<input_table_type_list> connect, typename entity_system>
-			static void apply(ui_manager& p_ui_manager, entity_system& p_entity_system)
+			template<is_in_list<input_table_type_list> connect, typename entity_system >
+			static void apply(ui_manager& p_ui_manager, entity_system& p_entity_system )
 			{
 
 				std::string name = get_type_name<connect>();
@@ -44,13 +44,12 @@ namespace clumsy
 				{
 					auto dummy = empty{};
 					auto ui = ui_factory::create<connect::ui>(name, connect::ui_param, dummy);
-					invoke_update_function<typename connect::out, typename connect::in, typename connect::index_map, entity_system>::apply<connect::func>(p_entity_system, ui);
+					invoke_update_function<typename connect::out, typename connect::in, typename connect::index_map, entity_system >::apply<connect::func>(p_entity_system, ui);
 				}
 				else
 				{
 
 					auto rng = get_ui_bind_variable<typename connect::index_map, typename connect::out>::get_out_range(p_entity_system);
-
 					if (rng.empty())
 					{
 						return;
@@ -63,7 +62,7 @@ namespace clumsy
 					}
 
 					auto ui = ui_factory::create<connect::ui>(name, connect::ui_param, *v);
-					invoke_update_function<typename connect::out, typename connect::in, typename connect::index_map, entity_system>::template apply<connect::func>(p_entity_system, ui);
+					invoke_update_function<typename connect::out, typename connect::in, typename connect::index_map, entity_system >::template apply<connect::func>(p_entity_system, ui);
 				}
 			}
 

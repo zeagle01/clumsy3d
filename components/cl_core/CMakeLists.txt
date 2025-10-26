@@ -16,6 +16,7 @@ PUBLIC
 	member_extractor.ixx
 	get_type_name.ixx
 	static_var_map.ixx
+	type_helper.ixx
 PUBLIC
 	include/cl_core/config_define_helper.h
 PRIVATE

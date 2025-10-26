@@ -23,6 +23,8 @@ namespace clumsy
 		ENTRY(selected_entities,			USE(type, std::vector<uint64_t>);			VALUE(init_value,empty_v);			LIST(tag,field_tag::singleton));
 		ENTRY(sync_move_pairs,				USE(type, std::vector<directed_edge>);		VALUE(init_value,empty_v);			LIST(tag,field_tag::singleton));
 
+		ENTRY(position,						USE(type, vec3f);							VALUE(init_value, vec3f{});			LIST(tag));
+
 		ENTRY(resolution_x,					USE(type, int);								VALUE(init_value,20);				LIST(tag));
 		ENTRY(resolution_y,					USE(type, int);								VALUE(init_value,20);				LIST(tag));
 

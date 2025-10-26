@@ -27,18 +27,17 @@ namespace clumsy
 	struct input_table
 	{
 
+		ENTRY(add_triangle,			FUNC(build_triangle);			OUT(cpn::position_buffer,cpn::triangle_buffer);							INDEX_MAP(all_to_one<entity_range::create,entity_range::none>);										IN();											UI(button)			UI_PARAM(empty_v));
+		ENTRY(add_plane,			FUNC(do_nothing);				OUT(cpn::resolution_x,cpn::resolution_y,cpn::length_x,cpn::length_y);	INDEX_MAP(all_to_one<entity_range::create,entity_range::none>);										IN();											UI(button)			UI_PARAM(empty_v));
+		ENTRY(random_select,		FUNC(get_last);					OUT(cpn::selected_entities);											INDEX_MAP(all_to_one<entity_range::all,entity_range::all>);											IN(cpn::id);									UI(button)			UI_PARAM(empty_v));
+		ENTRY(remove_selected,		FUNC(empty);					OUT(empty);																INDEX_MAP(erase<entity_range::value_of<cpn::selected_entities>>);									IN();											UI(button)			UI_PARAM(empty_v));
+		ENTRY(add_sync_pair,		FUNC(set_sync_pair);			OUT(cpn::sync_move_pairs);												INDEX_MAP(all_to_one<entity_range::all,entity_range::all>);											IN(cpn::id);									UI(button)			UI_PARAM(empty_v));
+		ENTRY(sync_move,			FUNC(offsetting_pos);			OUT(cpn::position_buffer);												INDEX_MAP(one_to_one<index_map::directed_edge, entity_range::value_of<cpn::sync_move_pairs>>);		IN(cpn::position_buffer);						UI(button)			UI_PARAM(empty_v));
 
-		ENTRY(add_triangle,			FUNC(build_triangle);			OUT(cpn::position_buffer,cpn::triangle_buffer);					INDEX_MAP(all_to_one<entity_range::create,entity_range::none>);										IN();											UI(button)			UI_PARAM(empty_v));
-		ENTRY(random_select,		FUNC(get_last);					OUT(cpn::selected_entities);									INDEX_MAP(all_to_one<entity_range::all,entity_range::all>);											IN(cpn::id);									UI(button)			UI_PARAM(empty_v));
-		ENTRY(remove_selected,		FUNC(empty);					OUT(empty);														INDEX_MAP(erase<entity_range::value_of<cpn::selected_entities>>);									IN();											UI(button)			UI_PARAM(empty_v));
-		ENTRY(add_sync_pair,		FUNC(set_sync_pair);			OUT(cpn::sync_move_pairs);										INDEX_MAP(all_to_one<entity_range::all,entity_range::all>);											IN(cpn::id);									UI(button)			UI_PARAM(empty_v));
-		ENTRY(sync_move,			FUNC(offsetting_pos);			OUT(cpn::position_buffer);										INDEX_MAP(one_to_one<index_map::directed_edge, entity_range::value_of<cpn::sync_move_pairs>>);		IN(cpn::position_buffer);						UI(button)			UI_PARAM(empty_v));
-		ENTRY(set_resolution_x,		FUNC(do_nothing);				OUT(cpn::resolution_x);											INDEX_MAP(all_to_all<entity_range::value_of<cpn::selected_entities>,entity_range::none>);			IN();											UI(input_int)		UI_PARAM(empty_v));
-
-		//ENTRY(bind_resolution_x,		FUNC(assign);						OUT(selected_entity<cpn::resolution_x>);												IN()														UI(input_int)		UI_PARAM(empty_v));
-		//ENTRY(bind_resolution_y,		FUNC(assign);						OUT(selected_entity<cpn::resolution_y>);												IN()														UI(input_int)		UI_PARAM(empty_v));
-		//ENTRY(bind_length_x,			FUNC(assign);						OUT(selected_entity<cpn::length_x>);													IN()														UI(input_float)		UI_PARAM(empty_v));
-		//ENTRY(bind_length_y,			FUNC(assign);						OUT(selected_entity<cpn::length_y>);													IN()														UI(input_float)		UI_PARAM(empty_v));
+		ENTRY(set_resolution_x,		FUNC(do_nothing);				OUT(cpn::resolution_x);													INDEX_MAP(all_to_all<entity_range::value_of<cpn::selected_entities>,entity_range::none>);			IN();											UI(input_int)		UI_PARAM(empty_v));
+		ENTRY(set_resolution_y,		FUNC(do_nothing);				OUT(cpn::resolution_y);													INDEX_MAP(all_to_all<entity_range::value_of<cpn::selected_entities>,entity_range::none>);			IN();											UI(input_int)		UI_PARAM(empty_v));
+		ENTRY(set_length_x,			FUNC(do_nothing);				OUT(cpn::length_x);														INDEX_MAP(all_to_all<entity_range::value_of<cpn::selected_entities>,entity_range::none>);			IN();											UI(input_float)		UI_PARAM(empty_v));
+		ENTRY(set_length_y,			FUNC(do_nothing);				OUT(cpn::length_y);														INDEX_MAP(all_to_all<entity_range::value_of<cpn::selected_entities>,entity_range::none>);			IN();											UI(input_float)		UI_PARAM(empty_v));
 
 
 	};

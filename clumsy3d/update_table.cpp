@@ -8,10 +8,12 @@ module  clumsy3d: update_table;
 import  : component;
 import  : update_functions;
 
-#define INPUT(...)		LIST(input, __VA_ARGS__)
-#define OUTPUT(...)		LIST(output, __VA_ARGS__)
-#define TAG(...)		LIST(tag, __VA_ARGS__)
-#define FUNC(...)		USE(func, __VA_ARGS__)
+import clumsy.core;
+
+#define OUT(...)			LIST(out,__VA_ARGS__)
+#define IN(...)				LIST(in,__VA_ARGS__)
+#define INDEX_MAP(...)		USE(index_map,entity_mapper::__VA_ARGS__)
+#define FUNC(...)			USE(func,__VA_ARGS__)
 
 namespace clumsy
 {
@@ -19,11 +21,14 @@ namespace clumsy
 
 	struct update_table
 	{
-		ENTRY(add_triangle,			FUNC(build_triangle)		OUTPUT( cpn::position_buffer, cpn::triangle_buffer)							INPUT()																TAG());
-		//ENTRY(remove_triangle,		FUNC(build_triangle)		OUTPUT()																	INPUT( cpn::position_buffer, cpn::triangle_buffer)					TAG());
+		ENTRY(update_plane,			FUNC(compute_plane);			OUT(cpn::position_buffer,cpn::triangle_buffer);					INDEX_MAP(one_to_one<index_map::identity,entity_range::all>);										IN(cpn::resolution_x,cpn::resolution_y,cpn::length_x,cpn::length_y));
 	};
+
+	using updators = extract_member_type_list_t<update_table>;
 }
 
-#undef INPUT		
-#undef OUTPUT		
-#undef TAG		
+
+#undef OUT			
+#undef IN			
+#undef INDEX_MAP	
+#undef FUNC		

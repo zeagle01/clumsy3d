@@ -3,6 +3,7 @@ module;
 
 #include <stdint.h>
 #include <functional>
+#include <typeindex>
 
 module clumsy3d:entity_manager;
 
@@ -75,19 +76,24 @@ namespace clumsy
 			return m_entity_system.get_component<component>(id);
 		}
 
-		template<single_component<type_list> component>
-		auto& get_singleton()
+		std::vector<std::type_index> get_component_keys(uint64_t id)
 		{
-			auto obj = m_entity_system.get_entities<component>();
-			return m_entity_system.get_component<component>(obj.back());
+			return m_entity_system.get_component_keys(id);
 		}
 
-		template<single_component<type_list> component>
-		const auto& get_singleton(uint64_t id) const
-		{
-			auto obj = m_entity_system.get_entities<component>();
-			return m_entity_system.get_component<component>(obj.back());
-		}
+		//template<single_component<type_list> component>
+		//auto& get_singleton()
+		//{
+		//	auto obj = m_entity_system.get_entities<component>();
+		//	return m_entity_system.get_component<component>(obj.back());
+		//}
+
+		//template<single_component<type_list> component>
+		//const auto& get_singleton(uint64_t id) const
+		//{
+		//	auto obj = m_entity_system.get_entities<component>();
+		//	return m_entity_system.get_component<component>(obj.back());
+		//}
 
 		template<is_in_list<type_list> component>
 		void remove_component(uint64_t id)

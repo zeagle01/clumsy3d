@@ -9,6 +9,7 @@ module;
 export module clumsy.core:entity_system;
 
 import :type_list;
+import :type_helper;
 
 namespace clumsy
 {
@@ -38,7 +39,7 @@ namespace clumsy
 		template<is_in_list<type_list> component>
 		void add_component(uint64_t id, const type_getter<component>::type& value)
 		{
-			auto key = get_key<component>();
+			auto key = get_type_index<component>();
 
 			m_entities[id][key] = std::make_shared<typename type_getter<component>::type>(value);
 		}
@@ -46,7 +47,7 @@ namespace clumsy
 		template<is_in_list<type_list> component>
 		void add_component(uint64_t id )
 		{
-			auto key = get_key<component>();
+			auto key = get_type_index<component>();
 
 			m_entities[id][key] = std::make_shared<typename type_getter<component>::type>();
 		}
@@ -54,7 +55,7 @@ namespace clumsy
 		template<is_in_list<type_list> component>
 		auto& get_component(uint64_t id)
 		{
-			auto key = get_key<component>();
+			auto key = get_type_index<component>();
 
 			return *std::static_pointer_cast<typename type_getter<component>::type>(m_entities[id][key]);
 		}
@@ -62,15 +63,28 @@ namespace clumsy
 		template<is_in_list<type_list> component>
 		const auto& get_component(uint64_t id) const
 		{
-			auto key = get_key<component>();
+			auto key = get_type_index<component>();
 
 			return *std::static_pointer_cast<typename type_getter<component>::type>(m_entities.at(id).at(key));
+		}
+
+		std::vector<std::type_index> get_component_keys(uint64_t id)
+		{
+			std::vector<std::type_index> ret; 
+			ret.reserve(m_entities[id].size());
+			for (auto [key, _] : m_entities[id])
+			{
+				ret.push_back(key);
+			}
+			ret.shrink_to_fit();
+
+			return ret;
 		}
 
 		template<is_in_list<type_list> component>
 		void remove_component(uint64_t id)
 		{
-			auto key = get_key<component>();
+			auto key = get_type_index<component>();
 			m_entities[id].erase(key);
 		}
 
@@ -96,7 +110,7 @@ namespace clumsy
 						(
 							*std::static_pointer_cast<typename type_getter<component>::type>
 							(
-								m_entities[id][get_key<component>()]
+								m_entities[id][get_type_index<component>()]
 							)
 						)
 						...
@@ -121,19 +135,8 @@ namespace clumsy
 			return ret;
 		}
 
-		//template<>
-		//std::vector<uint64_t> get_entities() const
-		//{
-		//	return std::vector<uint64_t>();
-		//}
-
 	private:
 		using key_t = std::type_index;
-
-		template<typename var> static constexpr key_t get_key() 
-		{
-			return std::type_index(typeid(var));
-		}
 
 	private:
 		std::map<uint64_t, std::map<key_t, std::shared_ptr<void>>> m_entities;

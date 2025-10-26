@@ -5,11 +5,13 @@ module;
 export module clumsy.core:static_var_map;
 
 import :type_list;
+import :type_helper;
 
 namespace clumsy
 {
+
 	export
-	template<typename tl>
+	template<typename tl, template<typename> typename t_getter = type_getter>
 	class static_var_map
 	{
 	public:
@@ -23,7 +25,7 @@ namespace clumsy
 		auto& get_ref() 
 		{
 			constexpr int i = get_index_v< tl, var_name>;
-			auto ptr = std::static_pointer_cast<typename var_name::type>(m_datas[i]);
+			auto ptr = std::static_pointer_cast<typename t_getter<var_name>::type>(m_datas[i]);
 			return *ptr;
 		}
 
@@ -31,7 +33,7 @@ namespace clumsy
 		const auto& get_ref() const 
 		{
 			constexpr int i = get_index_v< tl, var_name>;
-			auto ptr = std::static_pointer_cast<typename var_name::type>(m_datas[i]);
+			auto ptr = std::static_pointer_cast<typename t_getter<var_name>::type>(m_datas[i]);
 			return *ptr;
 		}
 
@@ -46,8 +48,8 @@ namespace clumsy
 			template<typename var_name>
 			static void apply(static_var_map* obj)
 			{
-				int i = get_index_v< tl, var_name>;
-				obj->m_datas[i] = std::make_shared<typename var_name::type>();
+				constexpr int i = get_index_v< tl, var_name>;
+				obj->m_datas[i] = std::make_shared<typename t_getter<var_name>::type>();
 			}
 
 		};

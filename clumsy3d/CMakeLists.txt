@@ -23,8 +23,10 @@ PRIVATE
 	ui_binder.cpp
 	entity_manager.cpp
 	commands.cpp
+	command_manager.cpp
 	invoke_update_function.cpp
 	common_structs.cpp
+	cmd_executor.cpp
 )
 
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_23)

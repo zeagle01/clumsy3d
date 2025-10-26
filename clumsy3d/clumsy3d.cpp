@@ -8,6 +8,9 @@ module clumsy3d;
 import :component;
 import :ui_binder;
 import :entity_manager;
+import :commands;
+import :cmd_executor;
+import :command_manager;
 
 import clumsy.core;
 import clumsy.event_driver;
@@ -45,12 +48,20 @@ namespace clumsy
 			m_renderer.clear_screen();
 
 			//m_ui_manager.clear();
+			command_manager<cm_access::full, component_list, type_getter> full_entities(m_entity_system, m_commands);
+
 			m_ui_manager.update(
 				[&]()
 				{
-					ui_binder::apply(m_ui_manager, m_entity_system);
+					ui_binder::apply(m_ui_manager, full_entities );
 				}
 			);
+
+			command_manager<cm_access::cmd_only, component_list, type_getter> cmd_entities(m_entity_system, m_commands);
+			cmd_executor::apply(cmd_entities );
+
+			m_commands.clear();
+
 			//ui_binder::apply(m_ui_manager, m_entity_system);
 			//m_ui_manager.update();
 
@@ -114,10 +125,10 @@ namespace clumsy
 		ui_manager m_ui_manager;
 
 	private:
-		template<typename T> struct get_type { using type = T::type; };
-		using component_list = extract_member_type_list_t<component>;
-		entity_manager<component_list, get_type> m_entity_system;
+		entity_manager<component_list, type_getter> m_entity_system;
+		commands<component_list,type_getter>		 m_commands;
 	};
+
 
 	/////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////

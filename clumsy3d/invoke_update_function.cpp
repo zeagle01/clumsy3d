@@ -14,7 +14,7 @@ import clumsy.core;
 namespace clumsy
 {
 
-	template<typename index_map, typename in_list>
+	template<typename entity_rng_t, typename in_list>
 	struct get_entity_range;
 
 	template<template<typename> typename tl, typename ...in_cpn>
@@ -87,16 +87,16 @@ namespace clumsy
 
 	using triggerer = std::function<bool()>;
 
-	template<typename out_list, typename in_list, typename index_map, typename entity_system>
+	template<typename out_list, typename in_list, typename index_map, typename entity_system >
 	struct invoke_update_function;
 
-	template< typename in_list,  typename entity_system, typename index_map, typename ...out_cpn>
-	struct invoke_update_function<type_list<out_cpn...>, in_list, index_map, entity_system>
+	template< typename in_list, typename index_map, typename entity_system, typename ...out_cpn>
+	struct invoke_update_function<type_list<out_cpn...>, in_list, index_map, entity_system >
 	{
 		using out_list = type_list<out_cpn...>;
 
 		template<typename F, typename ...P >
-		static void apply(entity_system& p_entity_system, triggerer trig, P&&...p)
+		static void apply(entity_system& p_entity_system,  triggerer trig, P&&...p)
 		{
 			with_in_out_list < in_list > ::template apply<F>(p_entity_system, trig, std::forward<P>(p)...);
 		}
@@ -108,23 +108,30 @@ namespace clumsy
 		struct with_in_out_list<type_list<in_cpn...>>
 		{
 			template<typename F, typename ...P >
-			static void apply(entity_system& p_entity_system, triggerer& trig, P&&...p)
+			static void apply(entity_system& p_entity_system,  triggerer& trig, P&&...p)
 			{
-				imp<index_map>::template apply<F>(p_entity_system, trig, std::forward<P>(p)...);
+				imp<index_map>::template apply<F>(p_entity_system,  trig, std::forward<P>(p)...);
 			}
 
 		private:
-			template<typename cpn>
+			template<typename cpn >
 			static auto& create_or_get_value(uint64_t id, entity_system& p_entity_system)
 			{
 				if (!p_entity_system.contains<cpn>(id))
 				{
-					p_entity_system.add_component<cpn>(id);
+					if constexpr (std::is_same_v<std::decay_t<decltype(cpn::init_value)>, empty>)
+					{
+						p_entity_system.add_component<cpn>(id);
+					}
+					else
+					{
+						p_entity_system.add_component<cpn>(id, cpn::init_value);
+					}
 				}
-				return p_entity_system.get_component<cpn>(id);
+				return p_entity_system.get_component_to_modify<cpn>(id);
 			}
 
-			template<typename cpn>
+			template<typename cpn >
 			static auto create_or_get_value(const std::vector<uint64_t >& ids, entity_system& p_entity_system)
 			{
 				std::vector<typename cpn::type*>  ret;
@@ -132,15 +139,23 @@ namespace clumsy
 				{
 					if (!p_entity_system.contains<cpn>(id))
 					{
-						p_entity_system.add_component<cpn>(id);
+						if constexpr (std::is_same_v<std::decay_t<decltype(cpn::init_value)>, empty>)
+						{
+							p_entity_system.add_component<cpn>(id);
+						}
+						else
+						{
+							p_entity_system.add_component<cpn>(id, cpn::init_value);
+						}
 					}
-					ret.push_back(&p_entity_system.get_component<cpn>(id));
+
+					ret.push_back(&p_entity_system.get_component_to_modify<cpn>(id));
 				}
 
 				return ret;
 			}
 
-			template<typename cpn>
+			template<typename cpn, typename entity_system>
 			static auto get_values(const std::vector<uint64_t >& ids, entity_system& p_entity_system)
 			{
 				std::vector<cpn::type>  ret;
@@ -234,7 +249,7 @@ namespace clumsy
 			struct imp<entity_mapper::one_to_one<id_map, in_range>>
 			{
 				template<typename F, typename ...P >
-				static void apply(entity_system& p_entity_system, triggerer& trig, P&&...p)
+				static void apply(entity_system& p_entity_system,  triggerer& trig, P&&...p)
 				{
 					auto in_entities = get_entity_range<in_range, in_list>::apply(p_entity_system);
 

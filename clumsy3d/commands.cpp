@@ -26,9 +26,33 @@ namespace clumsy
 		template< is_in_list<cmd_types> cmd, is_in_list<var_list> var>
 		void add_cmd(uint64_t id)
 		{
-			constexpr auto key = std::type_index(typeid(var));
-			m_commands.get_ref<var>()[id].insert(key);
+			auto key = get_type_index<var>();
+			m_commands.get_ref<cmd>()[id].insert(key);
+		}
 
+		template< is_in_list<cmd_types> cmd >
+		void add_cmds(uint64_t id, const std::vector<std::type_index>& var_keys)
+		{
+			for (auto key : var_keys)
+			{
+				m_commands.get_ref<cmd>()[id].insert(key);
+			}
+		}
+
+		template< is_in_list<cmd_types> cmd, is_in_list<var_list> ... var>
+		auto get_entities() const
+		{
+			std::vector<uint64_t> ret;
+			for (const auto& [id, var_indices] : m_commands.get_ref<cmd>())
+			{
+				bool var_exsited = (this->contains<cmd, var>(id)||...);
+				if (var_exsited)
+				{
+					ret.push_back(id);
+				}
+
+			}
+			return ret;
 		}
 
 		template< is_in_list<cmd_types> cmd, is_in_list<var_list> var>
@@ -63,6 +87,13 @@ namespace clumsy
 		};
 
 	private:
-		static_var_map<cmd_types>  m_commands;
+
+		template<typename>
+		struct collection_type
+		{
+			using type = std::map<uint64_t, std::set<std::type_index>>;
+		};
+
+		static_var_map<cmd_types, collection_type>  m_commands;
 	};
 }
