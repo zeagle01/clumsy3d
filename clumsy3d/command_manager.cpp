@@ -45,6 +45,11 @@ namespace clumsy
 			return m_entity_system.add_entity();
 		}
 
+		uint64_t next_entity() const
+		{
+			return m_entity_system.next_entity();
+		}
+
 		void remove_entity(uint64_t id)
 		{
 
@@ -101,6 +106,11 @@ namespace clumsy
 		{
 			return acessor<acess_polocy>::template contains<cpn...>(id, m_entity_system, m_commands);
 ;
+		}
+
+		bool contains_entity(uint64_t id) const
+		{
+			return m_entity_system.contains(id);
 		}
 
 	private:

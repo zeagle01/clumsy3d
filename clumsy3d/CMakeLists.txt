@@ -20,6 +20,7 @@ PRIVATE
 	update_table.cpp
 	input_table.cpp
 	update_functions.cpp
+	update_functions_meta.cpp
 	ui_binder.cpp
 	entity_manager.cpp
 	commands.cpp

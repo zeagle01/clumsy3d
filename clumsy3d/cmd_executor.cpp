@@ -29,7 +29,7 @@ namespace clumsy
 			static void apply(entity_system& p_entity_system)
 			{
 				auto alway_pass_through = []() { return true; };
-				invoke_update_function<typename entry::out, typename entry::in, typename entry::index_map, entity_system >::apply<entry::func>(p_entity_system, alway_pass_through);
+				invoke_update_function<typename entry::out, typename entry::in, typename entry::output_range, typename entry::input_range, typename entry::pack_out, typename entry::pack_in, entity_system >::apply<entry::func>(p_entity_system, alway_pass_through);
 
 			}
 		};

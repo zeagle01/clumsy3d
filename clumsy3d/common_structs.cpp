@@ -32,40 +32,41 @@ namespace clumsy
 	using cmd_types = extract_member_type_list_t<cmd_type>;
 
 
-	//////
-	struct entity_range
-	{
-		struct all {};
 
-		template<typename cpn>
-		struct value_of {};
+	////////
+	//struct index_map
+	//{
+	//	struct identity {};
+	//	struct directed_edge {};
+	//};
 
-		struct create {};
+	//struct entity_mapper
+	//{
+	//	template<typename out_range, typename input_range>
+	//	struct all_to_one {};
 
-		struct none {};
-	};
+	//	template<typename id_map, typename input_range>
+	//	struct one_to_one {};
 
+	//	template<typename out_range, typename input_range>
+	//	struct all_to_all {};
 
-	//////
-	struct index_map
-	{
-		struct identity {};
-		struct directed_edge {};
-	};
+	//	template< typename input_range>
+	//	struct erase {};
+	//};
 
 	struct entity_mapper
 	{
-		template<typename out_range, typename input_range>
-		struct all_to_one {};
+		ENTRY(all_to_one);
+		ENTRY(one_to_one);
+		ENTRY(identity);
+		ENTRY(all_to_all);
+	};
 
-		template<typename id_map, typename input_range>
-		struct one_to_one {};
-
-		template<typename out_range, typename input_range>
-		struct all_to_all {};
-
-		template< typename input_range>
-		struct erase {};
+	struct param_pack
+	{
+		ENTRY(as_whole);
+		ENTRY(as_each);
 	};
 
 }

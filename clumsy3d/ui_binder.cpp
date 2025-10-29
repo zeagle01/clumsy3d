@@ -26,9 +26,7 @@ namespace clumsy
 		template<typename entity_system >
 		static void apply(ui_manager& p_ui_manager, entity_system& p_entity_system )
 		{
-
 			clumsy::for_each_type<input_table_type_list>::template apply<bind_ui>(p_ui_manager, p_entity_system );
-
 		}
 
 	private:
@@ -38,31 +36,34 @@ namespace clumsy
 			static void apply(ui_manager& p_ui_manager, entity_system& p_entity_system )
 			{
 
+				auto invoke_update_func = [&](auto ui)
+				{
+					invoke_update_function<typename connect::out, typename connect::in, typename connect::output_range, typename connect::input_range, typename connect::pack_out, typename connect::pack_in, entity_system >::apply<connect::func>(p_entity_system, ui);
+				};
 				std::string name = get_type_name<connect>();
 				using ui_value_type = connect::ui::type;
 				if constexpr (std::is_same_v<ui_value_type, empty>)
 				{
 					auto dummy = empty{};
 					auto ui = ui_factory::create<connect::ui>(name, connect::ui_param, dummy);
-					invoke_update_function<typename connect::out, typename connect::in, typename connect::index_map, entity_system >::apply<connect::func>(p_entity_system, ui);
+					invoke_update_func(ui);
 				}
 				else
 				{
-
-					auto rng = get_ui_bind_variable<typename connect::index_map, typename connect::out>::get_out_range(p_entity_system);
+					auto rng = get_ui_bind_variable<typename connect::output_range, typename connect::out>::get_out_range(p_entity_system);
 					if (rng.empty())
 					{
 						return;
 					}
 
-					auto* v = get_ui_bind_variable<typename connect::index_map, typename connect::out>::apply(p_entity_system, rng);
+					auto* v = get_ui_bind_variable<typename connect::output_range, typename connect::out>::apply(p_entity_system, rng);
 					if (!v)
 					{
 						return;
 					}
 
 					auto ui = ui_factory::create<connect::ui>(name, connect::ui_param, *v);
-					invoke_update_function<typename connect::out, typename connect::in, typename connect::index_map, entity_system >::template apply<connect::func>(p_entity_system, ui);
+					invoke_update_func(ui);
 				}
 			}
 
@@ -70,8 +71,8 @@ namespace clumsy
 			template<typename cpn_range, typename in_list>
 			struct get_ui_bind_variable;
 
-			template<typename out_rng, typename in_rng, typename first_cpn,typename ...cpn>
-			struct get_ui_bind_variable<entity_mapper::all_to_all<out_rng, in_rng>, type_list<first_cpn,cpn...>>
+			template<typename cpn_rng, typename first_cpn, typename ...cpn>
+			struct get_ui_bind_variable<cpn_rng, type_list<first_cpn,cpn...>>
 			{
 				using out_list = type_list<cpn...>;
 				template<typename entity_system>
@@ -91,7 +92,7 @@ namespace clumsy
 				template<typename entity_system>
 				static auto get_out_range(entity_system& p_entity_system)
 				{
-					return clumsy::get_entity_range<out_rng, out_list>::apply(p_entity_system);
+					return cpn_rng::template apply<cpn...>(p_entity_system);
 				}
 			};
 

@@ -47,7 +47,6 @@ namespace clumsy
 
 			m_renderer.clear_screen();
 
-			//m_ui_manager.clear();
 			command_manager<cm_access::full, component_list, type_getter> full_entities(m_entity_system, m_commands);
 
 			m_ui_manager.update(
@@ -61,9 +60,6 @@ namespace clumsy
 			cmd_executor::apply(cmd_entities );
 
 			m_commands.clear();
-
-			//ui_binder::apply(m_ui_manager, m_entity_system);
-			//m_ui_manager.update();
 
 			float identity[]
 			{
@@ -120,9 +116,9 @@ namespace clumsy
 		}
 
 	private:
-		event_driver m_event_driver;
-		renderer m_renderer;
-		ui_manager m_ui_manager;
+		event_driver	m_event_driver;
+		renderer		m_renderer;
+		ui_manager		m_ui_manager;
 
 	private:
 		entity_manager<component_list, type_getter> m_entity_system;

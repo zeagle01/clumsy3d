@@ -226,12 +226,20 @@ namespace clumsy
 	}
 
 	export
-		template< typename T, int R, int C, is_indexable_2d m1t >
-		requires is_same_shape<matrix<T, R, C>, m1t>
+	template< typename T, int R, int C, is_indexable_2d m1t >
+	requires is_same_shape<matrix<T, R, C>, m1t>
 	void operator+=(matrix<T, R, C>& m0, const m1t& m1)
 	{
 		m0 = m0 + m1;
 	}
+
+//	export
+//	template< typename T, int R, int C, is_indexable_2d m1t >
+//	requires is_same_shape<matrix<T, R, C>, m1t>
+//	void operator*=(matrix<T, R, C>& m0, const m1t& m1)
+//	{
+//		m0 = m0 + m1;
+//	}
 
 	//////////////////////////////////////////////////////
 	export

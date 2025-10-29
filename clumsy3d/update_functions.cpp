@@ -6,6 +6,7 @@ module;
 module  clumsy3d: update_functions;
 
 import :component;
+import :common_structs;
 
 import clumsy.matrix;
 import clumsy.core;
@@ -27,7 +28,19 @@ namespace clumsy
 		{
 			static uint64_t offset = 0;
 			auto size = all_entities.size();
-			id = { all_entities[offset % size] };
+			auto new_id = offset % size;
+			id.resize(2);
+			id[offset % 2] = new_id;
+			//if (id.size() == 2)
+			//{
+			//	id[0] = new_id;
+
+			//}
+			//else
+			//{
+			//	id.push_back(new_id);
+			//}
+
 			offset++;
 		}
 	};
@@ -36,9 +49,13 @@ namespace clumsy
 	{
 		static void apply(std::vector<directed_edge>& edges, const std::vector<uint64_t>& all_entities )
 		{
-			if (all_entities.size() > 1)
+			if (all_entities.size() == 2)
 			{
-				edges = { directed_edge{ all_entities.front(),all_entities.back() } };
+				edges = { directed_edge{ all_entities[0],all_entities[1]} };
+			}
+			else
+			{
+				edges.clear();
 			}
 		}
 	};
@@ -67,13 +84,17 @@ namespace clumsy
 			vec3f center = {};
 			for (int i = 0; i < pos_in.size(); i++)
 			{
-				center += pos_in[i];
+				center(0) += pos_in[i](0) / pos_in.size();
+				center(1) += pos_in[i](1) / pos_in.size();
+				center(2) += pos_in[i](2) / pos_in.size();
 			}
 
 			vec3f center_out = {};
 			for (int i = 0; i < pos_out.size(); i++)
 			{
-				center_out += pos_out[i];
+				center_out(0) += pos_out[i](0) / pos_out.size();
+				center_out(1) += pos_out[i](1) / pos_out.size();
+				center_out(2) += pos_out[i](2) / pos_out.size();
 			}
 			auto offset = vec3f{ 0,0,0 };
 			for (int i = 0; i < pos_out.size(); i++)
@@ -131,6 +152,20 @@ namespace clumsy
 			pos.shrink_to_fit();
 			tri.shrink_to_fit();
 
+		}
+
+	};
+
+	struct broad_cast_by_first
+	{
+
+		template<typename T>
+		static void apply(std::vector<T*> values)
+		{
+			for (int i = 1; i < values.size(); i++)
+			{
+				*values[i] = *values[0];
+			}
 		}
 
 	};

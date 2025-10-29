@@ -31,6 +31,12 @@ namespace clumsy
 			return m_id++;
 		}
 
+		uint64_t next_entity(int next_nth = 1) const
+		{
+			return m_id + next_nth - 1;
+		}
+
+
 		void remove_entity(uint64_t id)
 		{
 			m_entities.erase(id);
@@ -94,6 +100,11 @@ namespace clumsy
 		bool contains(uint64_t id) const
 		{
 			return  m_entities.contains(id) && (m_entities.at(id).contains(typeid(component))&&...);
+		}
+
+		bool contains_entity(uint64_t id) const
+		{
+			return m_entities.contains(id);
 		}
 
 		template<is_in_list<type_list> ... component>
